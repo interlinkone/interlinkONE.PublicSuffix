@@ -2,12 +2,14 @@
 using System;
 using System.Linq;
 
-namespace PublicSuffix.Rules {
+namespace PublicSuffix.Rules
+{
 
     /// <summary>
     /// An abstract Rule class that the specific Rule Types inherit from.
     /// </summary>
-    public abstract class Rule {
+    public abstract class Rule
+    {
 
         /// <summary>
         /// The normalized rule name
@@ -22,17 +24,20 @@ namespace PublicSuffix.Rules {
         /// <summary>
         /// Create a new Rule instance.
         /// </summary>
-        /// <param name="name">A line from a <see cref="RulesList" /></param>
-        public Rule(string name) {
-            this.Name   = name.ToLowerInvariant();
-            this.Value  = this.Name;
+        /// <param name="name">A line from a <see cref="RulesFactory" /></param>
+        public Rule(string name)
+        {
+            this.Name = name.ToLowerInvariant();
+            this.Value = this.Name;
         }
 
         /// <summary>
         /// An array of parts from splitting the rule along the dots.
         /// </summary>
-        public string[] Parts {
-            get {
+        public string[] Parts
+        {
+            get
+            {
                 return this.Name.Split('.').Reverse().ToArray();
             }
         }
@@ -40,8 +45,10 @@ namespace PublicSuffix.Rules {
         /// <summary>
         /// The number of <see cref="Parts" />
         /// </summary>
-        public int Length {
-            get {
+        public int Length
+        {
+            get
+            {
                 return this.Parts.Length;
             }
         }
@@ -50,7 +57,8 @@ namespace PublicSuffix.Rules {
         /// Convert this rule instance to a string.
         /// </summary>
         /// <returns>The <see cref="Name" /></returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return this.Name;
         }
 
@@ -60,14 +68,17 @@ namespace PublicSuffix.Rules {
         /// </summary>
         /// <param name="url">A valid url, example: http://www.google.com</param>
         /// <returns>true if the rule matches; otherwise, false.</returns>
-        public virtual bool IsMatch(string url) {
-            var host    = this.Canonicalize(url);
-            var match   = true;
+        public virtual bool IsMatch(string url)
+        {
+            var host = this.Canonicalize(url);
+            var match = true;
 
-            for(var h = 0; h < host.Length; h++) {
-                if(h < this.Length) {
+            for (var h = 0; h < host.Length; h++)
+            {
+                if (h < this.Length)
+                {
                     var part = this.Parts[h];
-                    if(part != host[h] && part != "*") match = false;
+                    if (part != host[h] && part != "*") match = false;
                 }
             }
 
@@ -80,13 +91,15 @@ namespace PublicSuffix.Rules {
         /// </summary>
         /// <param name="url">A valid url, example: http://www.google.com</param>
         /// <returns>A valid <see cref="Domain" /> instance.</returns>
-        public virtual Domain Parse(string url) {
+        public virtual Domain Parse(string url)
+        {
             var host = this.Canonicalize(url);
 
-            var domain = new Domain() {
-                TLD         = string.Join(".", host.Take(this.Length).Reverse().ToArray()),
-                MainDomain  = host.Skip(this.Length).First(),
-                SubDomain   = string.Join(".", host.Skip(this.Length + 1).Reverse().ToArray())
+            var domain = new Domain()
+            {
+                TLD = string.Join(".", host.Take(this.Length).Reverse().ToArray()),
+                MainDomain = host.Skip(this.Length).FirstOrDefault(),
+                SubDomain = string.Join(".", host.Skip(this.Length + 1).Reverse().ToArray())
             };
 
             return domain;
@@ -97,7 +110,8 @@ namespace PublicSuffix.Rules {
         /// </summary>
         /// <param name="url">A valid url, example: http://www.google.com</param>
         /// <returns>A string array in reverse order.</returns>
-        protected string[] Canonicalize(string url) {
+        protected string[] Canonicalize(string url)
+        {
             var uri = new Uri(url);
             return uri.DnsSafeHost.Split('.').Reverse().ToArray();
         }

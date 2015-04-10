@@ -7,8 +7,8 @@ namespace PublicSuffix.Specs {
         protected static Parser parser;
 
         Establish context = () => {
-            var list = new RulesList();
-            var rules = list.FromFile(@"data\effective_tld_names.dat");
+            var list = new RulesFactory();
+            var rules = RulesFactory.FromFile(@"data\effective_tld_names.dat");
             parser = new Parser(rules);
         };
     }

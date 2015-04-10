@@ -11,7 +11,7 @@ namespace PublicSuffix.Rules {
     public class ExceptionRule : Rule {
 
         /// <summary>
-        /// Create a new <see cref="ExceptionRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesList" />
+        /// Create a new <see cref="ExceptionRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesFactory" />
         /// </summary>
         /// <param name="name">The rule, example: !metro.tokyo.jp</param>
         public ExceptionRule(string name) : base(name) {
