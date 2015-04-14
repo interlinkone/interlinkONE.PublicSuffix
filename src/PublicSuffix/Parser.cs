@@ -39,8 +39,10 @@ namespace PublicSuffix
         /// <returns>A normalized <see cref="Domain" /> instance.</returns>
         public Domain Parse(string url)
         {
+            var canonicalUrl = Rule.Canonicalize(url);
+
             var matches = this.Rules
-                .Where(r => r.IsMatch(url))
+                .Where(r => r.IsMatch(canonicalUrl))
                 .ToList();
 
             var rule = matches.FirstOrDefault(r => r is ExceptionRule)

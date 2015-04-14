@@ -26,7 +26,7 @@ namespace PublicSuffix.Rules {
         /// <param name="url">A valid url, example: http://www.site.metro.tokyo.jp</param>
         /// <returns>A valid <see cref="Domain" /> instance.</returns>
         public override Domain Parse(string url) {
-            var host = this.Canonicalize(url);
+            var host = Rule.Canonicalize(url);
 
             var domain = new Domain() {
                 TLD         = string.Join(".", this.Parts.Reverse().Skip(1).ToArray()),

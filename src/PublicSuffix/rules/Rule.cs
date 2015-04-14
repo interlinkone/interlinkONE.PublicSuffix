@@ -10,11 +10,29 @@ namespace PublicSuffix.Rules
     /// </summary>
     public abstract class Rule
     {
+        private string _name;
+        private string[] _parts;
 
         /// <summary>
         /// The normalized rule name
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            protected set
+            {
+                _name = value;
+                if (!string.IsNullOrEmpty(_name))
+                {
+                    _parts = _name.Split('.');
+                    Array.Reverse(_parts);
+                }
+                else
+                {
+                    _parts = new string[] { };
+                }
+            }
+        }
 
         /// <summary>
         /// The raw rule value
@@ -36,10 +54,7 @@ namespace PublicSuffix.Rules
         /// </summary>
         public string[] Parts
         {
-            get
-            {
-                return this.Name.Split('.').Reverse().ToArray();
-            }
+            get { return _parts; }
         }
 
         /// <summary>
@@ -70,7 +85,19 @@ namespace PublicSuffix.Rules
         /// <returns>true if the rule matches; otherwise, false.</returns>
         public virtual bool IsMatch(string url)
         {
-            var host = this.Canonicalize(url);
+            var host = Canonicalize(url);
+
+            return IsMatch(host);
+        }
+
+        /// <summary>
+        /// A domain is said to match a rule if, when the domain and rule are both split, and one compares the labels from the rule to the labels from the domain, beginning at the right hand end, one finds that for every pair either they are identical, or that the label from the rule is "*" (star).
+        /// The domain may legitimately have labels remaining at the end of this matching process.
+        /// </summary>
+        /// <param name="url">A valid url, example: http://www.google.com</param>
+        /// <returns>true if the rule matches; otherwise, false.</returns>
+        public virtual bool IsMatch(string[] host)
+        {
             var match = true;
 
             for (var h = 0; h < host.Length; h++)
@@ -78,7 +105,11 @@ namespace PublicSuffix.Rules
                 if (h < this.Length)
                 {
                     var part = this.Parts[h];
-                    if (part != host[h] && part != "*") match = false;
+                    if (part != host[h] && part != "*")
+                    {
+                        match = false;
+                        break;
+                    }
                 }
             }
 
@@ -93,7 +124,7 @@ namespace PublicSuffix.Rules
         /// <returns>A valid <see cref="Domain" /> instance.</returns>
         public virtual Domain Parse(string url)
         {
-            var host = this.Canonicalize(url);
+            var host = Canonicalize(url);
 
             var domain = new Domain()
             {
@@ -110,7 +141,7 @@ namespace PublicSuffix.Rules
         /// </summary>
         /// <param name="url">A valid url, example: http://www.google.com</param>
         /// <returns>A string array in reverse order.</returns>
-        protected string[] Canonicalize(string url)
+        public static string[] Canonicalize(string url)
         {
             var uri = new Uri(url);
             return uri.DnsSafeHost.Split('.').Reverse().ToArray();
