@@ -100,16 +100,14 @@ namespace PublicSuffix.Rules
         {
             var match = true;
 
-            for (var h = 0; h < host.Length; h++)
+            for (var h = 0; h < host.Length && h < this.Length; h++)
             {
-                if (h < this.Length)
+                var part = this.Parts[h];
+
+                if (part != host[h] && part != "*")
                 {
-                    var part = this.Parts[h];
-                    if (part != host[h] && part != "*")
-                    {
-                        match = false;
-                        break;
-                    }
+                    match = false;
+                    break;
                 }
             }
 
@@ -126,6 +124,24 @@ namespace PublicSuffix.Rules
         {
             var host = Canonicalize(url);
 
+            var domain = new Domain()
+            {
+                TLD = string.Join(".", host.Take(this.Length).Reverse().ToArray()),
+                MainDomain = host.Skip(this.Length).FirstOrDefault(),
+                SubDomain = string.Join(".", host.Skip(this.Length + 1).Reverse().ToArray())
+            };
+
+            return domain;
+        }
+
+        /// <summary>
+        /// Parses a domain name from the supplied url and current <see cref="Rule" /> instance.
+        /// Gets the Top, Second and Third level domains populated (if present.)
+        /// </summary>
+        /// <param name="url">A valid url, example: http://www.google.com</param>
+        /// <returns>A valid <see cref="Domain" /> instance.</returns>
+        public virtual Domain Parse(string[] host)
+        {
             var domain = new Domain()
             {
                 TLD = string.Join(".", host.Take(this.Length).Reverse().ToArray()),

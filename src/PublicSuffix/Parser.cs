@@ -54,5 +54,4 @@ namespace PublicSuffix
             return rule.Parse(url);
         }
     }
-
 }
