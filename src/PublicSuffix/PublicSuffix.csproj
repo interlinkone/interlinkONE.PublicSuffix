@@ -86,7 +86,7 @@
     <Compile Include="RuleFactory.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Domain.cs" />
-    <Compile Include="RulesList.cs" />
+    <Compile Include="RulesFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rules\DefaultRule.cs" />
     <Compile Include="rules\ExceptionRule.cs" />

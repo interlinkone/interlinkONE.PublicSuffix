@@ -8,7 +8,7 @@ namespace PublicSuffix.Rules {
     public class DefaultRule : Rule {
         
         /// <summary>
-        /// Create a new <see cref="DefaultRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesList" />
+        /// Create a new <see cref="DefaultRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesFactory" />
         /// </summary>
         public DefaultRule() : base("*") {
         }

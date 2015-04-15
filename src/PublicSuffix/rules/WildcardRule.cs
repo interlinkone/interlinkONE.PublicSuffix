@@ -9,7 +9,7 @@ namespace PublicSuffix.Rules {
     public class WildcardRule : Rule {
         
         /// <summary>
-        /// Create a new <see cref="WildcardRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesList" />
+        /// Create a new <see cref="WildcardRule" /> instance from a <see cref="Rule" /> from a <see cref="RulesFactory" />
         /// </summary>
         /// <param name="name">The rule, example: *.uk</param>
         public WildcardRule(string name) : base(name) {
